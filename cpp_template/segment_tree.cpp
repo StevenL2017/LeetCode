@@ -17,7 +17,7 @@ public:
             sum[root] += val;
             return;
         }
-        int m = (l + r) / 2;
+        int m = l + (r - l) / 2;
         if (idx <= m) {
             update(root * 2, l, m, idx, val);
         } else {
@@ -31,7 +31,7 @@ public:
             return sum[root];
         }
         long long tot = 0LL;
-        int m = (l + r) / 2;
+        int m = l + (r - l) / 2;
         if (L <= m) {
             tot += query(root * 2, l, m, L, R);
         }
@@ -57,7 +57,7 @@ public:
             mx[root] = val;
             return;
         }
-        int m = (l + r) / 2;
+        int m = l + (r - l) / 2;
         if (idx <= m) {
             update(root * 2, l, m, idx, val);
         } else {
@@ -71,7 +71,7 @@ public:
             return mx[root];
         }
         int ans = 0;
-        int m = (l + r) / 2;
+        int m = l + (r - l) / 2;
         if (L <= m) {
             ans = query(root * 2, l, m, L, R);
         }
