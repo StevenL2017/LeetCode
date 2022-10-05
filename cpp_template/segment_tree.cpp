@@ -70,7 +70,7 @@ public:
         if (L <= l && r <= R) {
             return mx[root];
         }
-        int ans = 0LL;
+        int ans = 0;
         int m = (l + r) / 2;
         if (L <= m) {
             ans = query(root * 2, l, m, L, R);
