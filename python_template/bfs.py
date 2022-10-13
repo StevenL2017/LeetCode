@@ -16,19 +16,6 @@ from collections import *
 # 				q.append((nxt, cost + 1))
 # 				visited.add(nxt)
 
-# 矩阵移动
-# for nr, nc in ((r + 1, c), (r, c + 1)):
-# 	if 0 <= nr < m and 0 <= nc < n:
-# 		pass
-	
-# for nr, nc in ((r - 1, c), (r + 1, c), (r, c - 1), (r, c + 1)):
-# 	if 0 <= nr < m and 0 <= nc < n:
-# 		pass
-		
-# for nr, nc in ((r - 1, c - 1), (r + 1, c - 1), (r - 1, c + 1), (r + 1, c + 1)):
-# 	if 0 <= nr < m and 0 <= nc < n:
-# 		pass
-
 # 0-1 BFS
 def bfs_01(grid):
     m, n = len(grid), len(grid[0])

@@ -1,5 +1,5 @@
 const int MOD = 1e9 + 7;
-const int MAXN = 1e6 + 3;
+const int MAXN = 1e3 + 3;
 
 long long c[MAXN][MAXN];
 
