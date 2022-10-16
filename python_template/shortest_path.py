@@ -20,8 +20,8 @@ def dijkstra_1(n, edges):
     for x, y, cost in edges:
         g[x].append((y, cost))
 
-    start = 0
     dist = [float('inf')] * n
+    start = 0
     dist[start] = 0
     used = [False] * n
     for _ in range(n):
@@ -39,8 +39,8 @@ def dijkstra_2(n, edges):
     for x, y, cost in edges:
         g[x].append((y, cost))
 
-    start = 0
     dist = [float('inf')] * n
+    start = 0
     dist[start] = 0
     q = [(0, start)]
     while q:
