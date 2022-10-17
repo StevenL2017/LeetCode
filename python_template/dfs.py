@@ -12,6 +12,15 @@ from collections import *
 #             visited.add(nxt)
 #             dfs(nxt)
 
+# 统计子树大小/点权和问题
+# def dfs(node: int, fa: int) -> int:
+#     sz = 1
+#     for nxt in graph[node]:
+#         if nxt != fa:
+#             sz += dfs(nxt, node)
+#     return sz
+# dfs(0, -1)
+
 # DFS找唯一环
 # 编号 1 ~ n
 def dfs_loop(n, graph):
