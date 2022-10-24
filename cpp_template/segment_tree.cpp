@@ -81,3 +81,43 @@ public:
         return ans;
     }
 };
+
+// 单点更新-区间最小值查询
+class SegmentTree {
+private:
+    vector<int> mn;
+
+public:
+    SegmentTree(int n) {
+        mn.resize(n * 4, 2e9);
+    }
+    
+    void update(int root, int l, int r, int idx, int val) {
+        if (l == r) {
+            mn[root] = val;
+            return;
+        }
+        int m = l + (r - l) / 2;
+        if (idx <= m) {
+            update(root * 2, l, m, idx, val);
+        } else {
+            update(root * 2 + 1, m + 1, r, idx, val);
+        }
+        mn[root] = min(mn[root * 2], mn[root * 2 + 1]);
+    }
+    
+    int query(int root, int l, int r, int L, int R) {
+        if (L <= l && r <= R) {
+            return mn[root];
+        }
+        int ans = 2e9;
+        int m = l + (r - l) / 2;
+        if (L <= m) {
+            ans = query(root * 2, l, m, L, R);
+        }
+        if (R > m) {
+            ans = min(ans, query(root * 2 + 1, m + 1, r, L, R));
+        }
+        return ans;
+    }
+};

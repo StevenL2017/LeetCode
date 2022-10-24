@@ -56,6 +56,34 @@ class SegmentTree:
             ans = max(ans, self.query(root * 2 + 1, m + 1, r, L, R))
         return ans
 
+# 单点更新-区间最小值查询
+class SegmentTree:
+    def __init__(self, n: int):
+        self.n = n
+        self.min = [float('inf')] * (n * 4)
+    
+    def update(self, root, l, r, idx, val):
+        if l == r:
+            self.min[root] = val
+            return
+        m = (l + r) // 2
+        if idx <= m:
+            self.update(root * 2, l, m, idx, val)
+        else:
+            self.update(root * 2 + 1, m + 1, r, idx, val)
+        self.min[root] = min(self.min[root * 2], self.min[root * 2 + 1])
+    
+    def query(self, root, l, r, L, R):
+        if L <= l and r <= R:
+            return self.min[root]
+        ans = float('inf')
+        m = (l + r) // 2
+        if L <= m:
+            ans = self.query(root * 2, l, m, L, R)
+        if R > m:
+            ans = min(ans, self.query(root * 2 + 1, m + 1, r, L, R))
+        return ans
+
 # 动态开点-区间元素个数查询
 class SegmentTree:
     def __init__(self, l=1, r=10 ** 9):
