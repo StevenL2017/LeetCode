@@ -32,3 +32,15 @@ bool prime(int x) {
             return false;
     return true;    
 }
+
+long long ap_an(int a1, int d, int n) {
+    return (long long)(1ll * a1 + 1ll * (n - 1) * d);
+}
+
+long long ap_sum(int a1, int d, int n) {
+    return (long long)(1ll * n * a1 + 1ll * n * (n - 1) * d / 2);
+}
+
+long long ap_an_sum(int a1, int an, int n) {
+    return (long long)(1ll * n * (a1 + an) / 2);
+}
