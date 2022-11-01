@@ -121,3 +121,52 @@ public:
         return ans;
     }
 };
+
+// 单点更新-自定义结点
+struct Node {
+    int val = 0;
+};
+
+Node merge(const Node& u, const Node& v) {
+    Node p;
+    p.val = u.val + v.val;
+    return p;
+}
+
+class SegmentTree {
+private:
+    vector<Node> s;
+
+public:
+    SegmentTree(int n) {
+        s.resize(n * 4);
+    }
+    
+    void update(int root, int l, int r, int idx, int val) {
+        if (l == r) {
+            s[root].val = val;
+            return;
+        }
+        int m = l + (r - l) / 2;
+        if (idx <= m) {
+            update(root * 2, l, m, idx, val);
+        } else {
+            update(root * 2 + 1, m + 1, r, idx, val);
+        }
+        s[root] = merge(s[root * 2], s[root * 2 + 1]);
+    }
+    
+    Node query(int root, int l, int r, int L, int R) {
+        if (L <= l && r <= R) {
+            return s[root];
+        }
+        int m = l + (r - l) / 2;
+        if (R <= m) {
+            return query(root * 2, l, m, L, R);
+        }
+        if (L > m) {
+            return query(root * 2 + 1, m + 1, r, L, R);
+        }
+        return merge(query(root * 2, l, m, L, R), query(root * 2 + 1, m + 1, r, L, R));
+    }
+};
