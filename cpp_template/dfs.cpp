@@ -7,6 +7,7 @@ using namespace std;
 int n;
 vector<vector<int>> graph;
 
+// check if a node is a parent (may not directly) of a target
 int t = 0;
 vector<int> parent(n), depth(n);
 vector<int> tin(n), tout(n);
