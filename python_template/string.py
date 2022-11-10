@@ -1,16 +1,16 @@
 from typing import *
 
-# Rabin-Karp算法
-def rk(s: str):
+# fail数组
+def get_fail(self, s: str) -> List[int]:
     n = len(s)
-    mod, base = 10 ** 9 + 7, 31
-    pre, mul = [0] * (n + 1), [1] + [0] * n
-    for i in range(1, n + 1):
-        pre[i] = (pre[i - 1] * base + ord(s[i - 1])) % mod
-        mul[i] = mul[i - 1] * base % mod
-
-    def get_hash(l, r):
-        return (pre[r + 1] - pre[l] * mul[r - l + 1] % mod + mod) % mod
+    fail = [-1] * n
+    for i in range(1, n):
+        j = fail[i - 1]
+        while j != -1 and s[j + 1] != s[i]:
+            j = fail[j]
+        if s[j + 1] == s[i]:
+            fail[i] = j + 1
+    return fail
 
 # KMP
 def kmp(query: str, pattern: str) -> bool:
@@ -34,18 +34,6 @@ def kmp(query: str, pattern: str) -> bool:
 				return True
 	return False
 
-# Next数组
-def get_next(self, s: str) -> List[int]:
-    n = len(s)
-    fail = [-1] * n
-    for i in range(1, n):
-        j = fail[i - 1]
-        while j != -1 and s[j + 1] != s[i]:
-            j = fail[j]
-        if s[j + 1] == s[i]:
-            fail[i] = j + 1
-    return fail
-
 # Z算法
 def z_function(s):
     n = len(s)
@@ -62,3 +50,15 @@ def z_function(s):
             l = i
             r = i + z[i] - 1
     return z
+
+# Rabin-Karp算法
+def rk(s: str):
+    n = len(s)
+    mod, base = 10 ** 9 + 7, 31
+    pre, mul = [0] * (n + 1), [1] + [0] * n
+    for i in range(1, n + 1):
+        pre[i] = (pre[i - 1] * base + ord(s[i - 1])) % mod
+        mul[i] = mul[i - 1] * base % mod
+
+    def get_hash(l, r):
+        return (pre[r + 1] - pre[l] * mul[r - l + 1] % mod + mod) % mod
