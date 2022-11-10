@@ -1,7 +1,7 @@
 from typing import *
 
-# fail数组
-def get_fail(self, s: str) -> List[int]:
+# fail数组(下标)
+def get_fail(s: str) -> List[int]:
     n = len(s)
     fail = [-1] * n
     for i in range(1, n):
@@ -12,30 +12,22 @@ def get_fail(self, s: str) -> List[int]:
             fail[i] = j + 1
     return fail
 
-# KMP
+# KMP算法(下标)
 def kmp(query: str, pattern: str) -> bool:
-	n, m = len(query), len(pattern)
-	
-	fail = [-1] * m
-	for i in range(1, m):
-		j = fail[i - 1]
-		while j != -1 and pattern[j + 1] != pattern[i]:
-			j = fail[j]
-		if pattern[j + 1] == pattern[i]:
-			fail[i] = j + 1
-			
-	match = -1
-	for i in range(1, n - 1):
-		while match != -1 and pattern[match + 1] != query[i]:
-			match = fail[match]
-		if pattern[match + 1] == query[i]:
-			match += 1
-			if match == m - 1:
-				return True
-	return False
+    n, m = len(query), len(pattern)
+    fail = get_fail(pattern)
+    j = -1
+    for i in range(n):
+        while j != -1 and pattern[j + 1] != query[i]:
+            j = fail[j]
+        if pattern[j + 1] == query[i]:
+            j += 1
+            if j == m - 1:
+                return i - m + 1
+    return -1
 
 # Z算法
-def z_function(s):
+def z_function(s: str) -> List[int]:
     n = len(s)
     z = [0] * n
     l, r = 0, 0
