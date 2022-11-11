@@ -1,4 +1,7 @@
 const int MOD = 998244353;
+const int MAXN = 1e5 + 7;
+
+int factorial[MAXN];
 
 int add(int x, int y) {
     x += y;
@@ -26,7 +29,26 @@ int binpow(int x, int y) {
     return z;
 }
 
-bool prime(int x) {
+int inv(int x) {
+	return binpow(x, MOD - 2);
+}
+
+int divide(int x, int y) {
+	return mul(x, inv(y));
+}
+
+void get_factorial() {
+	factorial[0] = 1;
+	for(int i = 1; i < MAXN; i++)
+		factorial[i] = mul(i, factorial[i - 1]);
+}
+
+int comb(int n, int k) {
+	if(k > n) return 0;
+	return divide(factorial[n], mul(factorial[n - k], factorial[k]));
+}
+
+bool is_prime(int x) {
     for(int i = 2; i * 1ll * i <= x; i++)
         if(x % i == 0)
             return false;
