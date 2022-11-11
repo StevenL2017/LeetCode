@@ -5,8 +5,8 @@ int factorial[MAXN];
 
 int add(int x, int y) {
     x += y;
-    while(x >= MOD) x -= MOD;
-    while(x < 0) x += MOD;
+    while (x >= MOD) x -= MOD;
+    while (x < 0) x += MOD;
     return x;
 }   
 
@@ -20,9 +20,9 @@ int mul(int x, int y) {
 
 int binpow(int x, int y) {
     int z = 1;
-    while(y)
+    while (y)
     {
-        if(y & 1) z = mul(z, x);
+        if (y & 1) z = mul(z, x);
         x = mul(x, x);
         y >>= 1;
     }
@@ -39,18 +39,17 @@ int divide(int x, int y) {
 
 void get_factorial() {
 	factorial[0] = 1;
-	for(int i = 1; i < MAXN; i++)
-		factorial[i] = mul(i, factorial[i - 1]);
+	for(int i = 1; i < MAXN; i++) factorial[i] = mul(i, factorial[i - 1]);
 }
 
 int comb(int n, int k) {
-	if(k > n) return 0;
+	if (k > n) return 0;
 	return divide(factorial[n], mul(factorial[n - k], factorial[k]));
 }
 
 bool is_prime(int x) {
-    for(int i = 2; i * 1ll * i <= x; i++)
-        if(x % i == 0)
+    for (int i = 2; i * 1ll * i <= x; i++)
+        if (x % i == 0)
             return false;
     return true;    
 }
