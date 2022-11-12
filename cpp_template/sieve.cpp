@@ -4,13 +4,13 @@ using namespace std;
 
 const int MAXN = 5e6 + 3;
 
-int primes[MAXN];
-int is_prime[MAXN];
-int mn_prime[MAXN];
+int primes[MAXN]; // list of primes
+int is_prime[MAXN]; // if it is prime
+int mn_prime[MAXN]; // min prime factor
 
 int eratosthenes(int n) {
     int p = 0; // count of primes for less or equal than n
-    is_prime[0] = is_prime[1] = 0; // if is prime
+    is_prime[0] = is_prime[1] = 0;
     for (int i = 2; i <= n; i++) {
         is_prime[i] = 1;
     }
@@ -28,7 +28,7 @@ int eratosthenes(int n) {
 }
 
 void eratosthenes_mn(int n) {
-    mn_prime[0] = mn_prime[1] = 1; // min prime factor
+    mn_prime[0] = mn_prime[1] = 1;
     for (int i = 2; i <= n; i++) {
         mn_prime[i] = n + 1;
     }
