@@ -2,7 +2,7 @@
 
 using namespace std;
 
-const int MAXN = 5e6 + 3;
+const int MAXN = 2e7 + 3;
 
 int primes[MAXN]; // list of primes
 int is_prime[MAXN]; // if it is prime
