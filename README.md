@@ -8,8 +8,8 @@
 - 代码随想录（入门级）：https://github.com/youngyangyang04/leetcode-master
 - OI百科（竞赛级）：https://oi-wiki.org/
 
-## 竞赛相关
+## 比赛相关
 - 力扣题目难度：https://zerotrac.github.io/leetcode_problem_rating/#/
-- 力扣竞赛分预测：https://lcpredictor.herokuapp.com/
+- 力扣竞赛分预测：https://lcpredictor.herokuapp.com/, https://lccn.lbao.site/
 - 查看比赛日程：https://clist.by
 - 查看用户题量：https://ojhunt.com/statistics
