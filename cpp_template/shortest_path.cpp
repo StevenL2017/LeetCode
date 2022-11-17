@@ -6,7 +6,7 @@ using namespace std;
 const long long INF = 9e18 + 7;
 
 // Dijkstra算法-堆
-pair<vector<long long>, vector<long long>> dijkstra(int n, vector<vector<int>> edges) {
+pair<vector<long long>, vector<long long>> dijkstra(int n, vector<vector<int>> edges, int start) {
     vector<vector<pair<int, int>>> g(n);
     for (auto& edge: edges) {
         g[edge[0]].emplace_back(edge[1], edge[2]);
@@ -14,9 +14,8 @@ pair<vector<long long>, vector<long long>> dijkstra(int n, vector<vector<int>> e
     }
 
     vector<long long> dist(n, INF), path(n);
-    int start = 0;
     dist[start] = 0;
-    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+    priority_queue<pair<long long, int>, vector<pair<long long, int>>, greater<pair<long long, int>>> pq;
     pq.emplace(0, start);
     while (!pq.empty()) {
         auto t = pq.top();
