@@ -7,6 +7,7 @@ const int MAXN = 2e7 + 3;
 int primes[MAXN]; // list of primes
 int is_prime[MAXN]; // if it is prime
 int mn_prime[MAXN]; // min prime factor
+int nxt_prime[MAXN]; // next prime factor, can be used to iterate all prime factors of positive integers
 int cnt_prime[MAXN]; // count of different prime factors
 
 int eratosthenes(int n) {
@@ -38,6 +39,20 @@ void eratosthenes_mn(int n) {
             mn_prime[i] = 1; // mn_prime[i] = i; if not consider 1
             for (int j = i + i; j <= n; j += i) {
                 mn_prime[j] = min(mn_prime[j], i);
+            }
+        }
+    }
+}
+
+void eratosthenes_nxt(int n) {
+    for (int i = 2; i < n; i++) {
+        if (nxt_prime[i] == 0) {
+            nxt_prime[i] = i;
+            if (i > 10000) continue;
+            for (int j = i * i; j < n; j += i) {
+                if (nxt_prime[j] == 0) {
+                    nxt_prime[j] = i;
+                }
             }
         }
     }
