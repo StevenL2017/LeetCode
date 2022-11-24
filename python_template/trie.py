@@ -51,6 +51,8 @@ class Trie:
         node = self
         ans = 0
         for i in range(self.L, -1, -1):
+            if not node:
+                return ans
             if val & (1 << i):
                 if node.left and node.left.cnt:
                     ans |= (1 << i)
