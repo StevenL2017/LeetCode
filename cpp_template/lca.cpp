@@ -20,7 +20,25 @@ void dfs(int node, int fa) {
     depth[node] = depth[f[node][0]] + 1;
     // 初始化：其他的祖先节点：第 2^i 的祖先节点是第 2^(i-1) 的祖先节点的第
     // 2^(i-1) 的祖先节点
-    for (int i = 1; i < 31; ++i) {
+    for (int i = 1; i < 31; i++) {
+        f[node][i] = f[f[node][i - 1]][i - 1];
+    }
+    // 遍历子节点来进行 dfs
+    int sz = graph[node].size();
+    for (int i = 0; i < sz; i++) {
+        if (graph[node][i] == fa) continue;
+        dfs(graph[node][i], node);
+    }
+}
+
+// 用来为 lca_sum 算法做准备，编号 1 ~ n
+void dfs_sum(int node, int fa) {
+    // 初始化：第 2^0 = 1 个祖先就是它的父亲节点，dep 也比父亲节点多 1
+    f[node][0] = fa;
+    depth[node] = depth[f[node][0]] + 1;
+    // 初始化：其他的祖先节点：第 2^i 的祖先节点是第 2^(i-1) 的祖先节点的第
+    // 2^(i-1) 的祖先节点
+    for (int i = 1; i < 31; i++) {
         f[node][i] = f[f[node][i - 1]][i - 1];
         cost[node][i] = cost[f[node][i - 1]][i - 1] + cost[node][i - 1];
     }
@@ -29,7 +47,7 @@ void dfs(int node, int fa) {
     for (int i = 0; i < sz; i++) {
         if (graph[node][i] == fa) continue;
         cost[graph[node][i]][0] = weight[node][i];
-        dfs(graph[node][i], node);
+        dfs_sum(graph[node][i], node);
     }
 }
 
@@ -52,11 +70,11 @@ int lca(int x, int y) {
         }
     }
     // 返回结果
-    return f[y][0];
+    return y == x ? y : f[y][0];
 }
 
-// 用倍增算法算 x 和 y 之间的总代价
-int lca_cost(int x, int y) {
+// 用倍增算法算 x 和 y 之间的边权和
+int lca_sum(int x, int y) {
     // 令 y 比 x 深
     if (depth[x] > depth[y]) swap(x, y);
     // 令 y 和 x 在一个深度
