@@ -2,7 +2,6 @@ from unionfind import *
 
 # Kruskal算法
 def kruskal(n, edges):
-    m = len(edges)
     edges.sort(key=lambda x: x[2])
 
     uf = UnionFind(n)
