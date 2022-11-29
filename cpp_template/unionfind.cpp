@@ -1,3 +1,7 @@
+#include <algorithm>
+
+using namespace std;
+
 // 路径压缩 + 启发式合并
 class UnionFind {
 private:
@@ -30,9 +34,7 @@ public:
     bool merge(int x, int y) {
         int x_ = find(x), y_ = find(y);
         if (x_ == y_) return false;
-        if (sz[x_] < sz[y_]) {
-            int temp = y_; y_ = x_; x_ = temp;
-        }
+        if (sz[x_] < sz[y_]) swap(x_, y_);
         f[y_] = x_;
         sz[x_] += sz[y_];
         count--;
