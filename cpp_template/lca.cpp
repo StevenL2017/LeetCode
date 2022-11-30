@@ -18,7 +18,7 @@ int cost[MAXN][31];
 void dfs(int node, int fa) {
     // 初始化：第 2^0 = 1 个祖先就是它的父亲节点，dep 也比父亲节点多 1
     f[node][0] = fa;
-    depth[node] = depth[f[node][0]] + 1;
+    depth[node] = fa > 0 ? depth[f[node][0]] + 1 : 0;
     // 初始化：其他的祖先节点：第 2^i 的祖先节点是第 2^(i-1) 的祖先节点的第
     // 2^(i-1) 的祖先节点
     for (int i = 1; i < 31; i++) {
@@ -67,7 +67,7 @@ int find_pth_parent(int x, int p) {
 void dfs_sum(int node, int fa) {
     // 初始化：第 2^0 = 1 个祖先就是它的父亲节点，dep 也比父亲节点多 1
     f[node][0] = fa;
-    depth[node] = depth[f[node][0]] + 1;
+    depth[node] = fa > 0 ? depth[f[node][0]] + 1 : 0;
     // 初始化：其他的祖先节点：第 2^i 的祖先节点是第 2^(i-1) 的祖先节点的第
     // 2^(i-1) 的祖先节点
     for (int i = 1; i < 31; i++) {
@@ -111,7 +111,7 @@ int lca_sum(int x, int y) {
 void dfs_max(int node, int fa) {
     // 初始化：第 2^0 = 1 个祖先就是它的父亲节点，dep 也比父亲节点多 1
     f[node][0] = fa;
-    depth[node] = depth[f[node][0]] + 1;
+    depth[node] = fa > 0 ? depth[f[node][0]] + 1 : 0;
     // 初始化：其他的祖先节点：第 2^i 的祖先节点是第 2^(i-1) 的祖先节点的第
     // 2^(i-1) 的祖先节点
     for (int i = 1; i < 31; i++) {
