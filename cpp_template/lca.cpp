@@ -54,6 +54,15 @@ int lca(int x, int y) {
     return y == x ? y : f[y][0];
 }
 
+int find_pth_parent(int x, int p) {
+    for (int i = 0; i < 31; i++) {
+        if (p >> i & 1) {
+            x = f[x][i];
+        }
+    }
+    return x;
+}
+
 // 用来为 lca_sum 算法做准备，编号 1 ~ n
 void dfs_sum(int node, int fa) {
     // 初始化：第 2^0 = 1 个祖先就是它的父亲节点，dep 也比父亲节点多 1
