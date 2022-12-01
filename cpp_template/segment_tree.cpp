@@ -170,3 +170,81 @@ public:
         return merge(query(root * 2, l, m, L, R), query(root * 2 + 1, m + 1, r, L, R));
     }
 };
+
+// 子树更新-子树状态查询
+const int MAXN = 5e5 + 3;
+
+vector<int> graph[MAXN];
+int status[MAXN], pos[MAXN], tin[MAXN], tout[MAXN];
+int tt = 1;
+
+// tin[node] 和 tout[node] 为左闭右开区间
+// tt 初始化为 1 使得线段树根节点为 1
+void dfs(int node, int fa) {
+    pos[tt] = node;
+    tin[node] = tt++;
+    for (auto& nxt: graph[node]) {
+        if (nxt == fa) continue;
+        dfs(nxt, node);
+    }
+    tout[node] = tt;
+}
+
+class SegmentTree {
+private:
+    vector<long long> mask; // 存储节点所代表的子树的状态，从下到上merge状态
+    vector<long long> add; // 存储节点所代表的子树的更新值，从上到下push更新值
+
+public:
+    SegmentTree(int n) {
+        mask.resize(n * 4);
+        add.resize(n * 4);
+    }
+
+    void build(int root, int l, int r) {
+        add[root] = -1;
+        if (l + 1 == r) {
+            mask[root] = 1ll << status[pos[l]];
+            return;
+        }
+        int m = l + (r - l) / 2;
+        build(root * 2, l, m);
+        build(root * 2 + 1, m, r);
+        mask[root] = mask[root * 2] | mask[root * 2 + 1];
+    }
+
+    void push(int root) {
+        if (add[root] == -1) return;
+        for (int i = 0; i < 2; i++) {
+            mask[root * 2 + i] = add[root * 2 + i] = add[root];
+        }
+        add[root] = -1;
+    }
+    
+    void update(int root, int l, int r, int L, int R, int val) {
+        if (L >= R) return;
+        if (L == l && r == R) {
+            mask[root] = 1ll << val;
+            add[root] = 1ll << val;
+            return;
+        }
+        push(root);
+        int m = l + (r - l) / 2;
+        update(root * 2, l, m, L, min(m, R), val);
+        update(root * 2 + 1, m, r, max(m, L), R, val);
+        mask[root] = mask[root * 2] | mask[root * 2 + 1];
+    }
+    
+    long long query(int root, int l, int r, int L, int R) {
+        if (L >= R) return 0;
+        if (L == l && r == R) {
+            return mask[root];
+        }
+        push(root);
+        long long ans = 0;
+        int m = l + (r - l) / 2;
+        ans |= query(root * 2, l, m, L, min(m, R));
+        ans |= query(root * 2 + 1, m, r, max(m, L), R);
+        return ans;
+    }
+};
