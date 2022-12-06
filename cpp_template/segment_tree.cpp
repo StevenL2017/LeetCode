@@ -1,3 +1,4 @@
+#include <climits>
 #include <vector>
 
 using namespace std;
@@ -89,7 +90,7 @@ private:
 
 public:
     SegmentTree(int n) {
-        mn.resize(n * 4, 2e9);
+        mn.resize(n * 4);
     }
     
     void update(int root, int l, int r, int idx, int val) {
@@ -171,11 +172,84 @@ public:
     }
 };
 
-// 子树更新-子树状态查询
-const int MAXN = 5e5 + 3;
+// 区间更新-自定义结点
+const int N = 2e5 + 3;
 
-vector<int> graph[MAXN];
-int status[MAXN], pos[MAXN], tin[MAXN], tout[MAXN];
+int a[N];
+
+struct Node {
+    int l = 0, r = 0;
+    long long val = LLONG_MAX, lazy = 0;
+};
+
+// 范围为左闭右闭区间
+class SegmentTree {
+private:
+    vector<Node> s;
+
+public:
+    SegmentTree(int n) {
+        s.resize(n * 4);
+    }
+
+    void push(int root) {
+        for (int i = 0; i < 2; i++) {
+            s[root * 2 + i].val += s[root].lazy;
+            s[root * 2 + i].lazy += s[root].lazy;
+        }
+        s[root].lazy = 0;
+        merge(root);
+    }
+
+    void merge(int root) {
+        s[root].val = min(s[root * 2].val, s[root * 2 + 1].val);
+    }
+
+    void build(int root, int l, int r) {
+        s[root].l = l, s[root].r = r;
+        if (l == r) {
+            s[root].val = a[l];
+            return;
+        }
+        int m = l + (r - l) / 2;
+        build(root * 2, l, m);
+        build(root * 2 + 1, m + 1, r);
+        merge(root);
+    }
+    
+    void update(int root, int L, int R, int delta) {
+        auto l = s[root].l, r = s[root].r;
+        if (L <= l && r <= R) {
+            s[root].val += delta;
+            s[root].lazy += delta;
+            return;
+        }
+        push(root);
+        int m = l + (r - l) / 2;
+        if (L <= m) update(root * 2, L, R, delta);
+        if (R > m) update(root * 2 + 1, L, R, delta);
+        merge(root);
+    }
+    
+    long long query(int root, int L, int R) {
+        auto l = s[root].l, r = s[root].r;
+        if (L <= l && r <= R) {
+            return s[root].val;
+        }
+        push(root);
+        long long ans = LLONG_MAX;
+        int m = l + (r - l) / 2;
+        if (L <= m) ans = min(ans, query(root * 2, L, R));
+        if (R > m) ans = min(ans, query(root * 2 + 1, L, R));
+        return ans;
+    }
+};
+
+// 子树更新-子树状态查询
+const int N = 5e5 + 3;
+
+vector<int> graph[N];
+int status[N], pos[N], tin[N], tout[N];
 int tt = 1;
 
 // tin[node] 和 tout[node] 为左闭右开区间
@@ -190,6 +264,7 @@ void dfs(int node, int fa) {
     tout[node] = tt;
 }
 
+// 范围为左闭右开区间
 class SegmentTree {
 private:
     vector<long long> mask; // 存储节点所代表的子树的状态，从下到上merge状态
@@ -201,6 +276,18 @@ public:
         add.resize(n * 4);
     }
 
+    void push(int root) {
+        if (add[root] == -1) return;
+        for (int i = 0; i < 2; i++) {
+            mask[root * 2 + i] = add[root * 2 + i] = add[root];
+        }
+        add[root] = -1;
+    }
+
+    void merge(int root) {
+        mask[root] = mask[root * 2] | mask[root * 2 + 1];
+    }
+
     void build(int root, int l, int r) {
         add[root] = -1;
         if (l + 1 == r) {
@@ -210,15 +297,7 @@ public:
         int m = l + (r - l) / 2;
         build(root * 2, l, m);
         build(root * 2 + 1, m, r);
-        mask[root] = mask[root * 2] | mask[root * 2 + 1];
-    }
-
-    void push(int root) {
-        if (add[root] == -1) return;
-        for (int i = 0; i < 2; i++) {
-            mask[root * 2 + i] = add[root * 2 + i] = add[root];
-        }
-        add[root] = -1;
+        merge(root);
     }
     
     void update(int root, int l, int r, int L, int R, int val) {
@@ -232,7 +311,7 @@ public:
         int m = l + (r - l) / 2;
         update(root * 2, l, m, L, min(m, R), val);
         update(root * 2 + 1, m, r, max(m, L), R, val);
-        mask[root] = mask[root * 2] | mask[root * 2 + 1];
+        merge(root);
     }
     
     long long query(int root, int l, int r, int L, int R) {
