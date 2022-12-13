@@ -1,3 +1,4 @@
+#include <set>
 #include <algorithm>
 
 using namespace std;
@@ -36,8 +37,9 @@ void eratosthenes_mn(int n) {
     }
     for (int i = 2; i <= n; i++) {
         if (mn_prime[i] == n + 1) {
-            mn_prime[i] = 1; // mn_prime[i] = i; if not consider 1
-            for (int j = i + i; j <= n; j += i) {
+            mn_prime[i] = i; // mn_prime[i] = 1; // if consider 1 as min prime
+            if (i > 10000) continue;
+            for (int j = i * i; j <= n; j += i) {
                 mn_prime[j] = min(mn_prime[j], i);
             }
         }
@@ -73,4 +75,14 @@ void count_different_prime_factors(int x) {
         int j = i / mn_prime[i];
         cnt_prime[i] = cnt_prime[j] + (mn_prime[j] != mn_prime[i]);
     }
+}
+
+set<int> get_prime_factors(int x) {
+    set<int> ans;
+    while (x > 1) {
+        auto y = mn_prime[x]; // auto y = nxt_prime[x];
+        x /= y;
+        ans.insert(y);
+    }
+    return ans;
 }
