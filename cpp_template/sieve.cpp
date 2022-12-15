@@ -10,6 +10,7 @@ int is_prime[MAXN]; // if it is prime
 int mn_prime[MAXN]; // min prime factor
 int nxt_prime[MAXN]; // next prime factor, can be used to iterate all prime factors of positive integers
 int cnt_prime[MAXN]; // count of different prime factors
+int mx_divisor[MAXN]; // max factor
 
 int eratosthenes(int n) {
     int p = 0; // count of primes for less or equal than n
@@ -85,4 +86,16 @@ set<int> get_prime_factors(int x) {
         ans.insert(y);
     }
     return ans;
+}
+
+void eratosthenes_mx(int n) {
+    mx_divisor[0] = n + 1;
+    mx_divisor[1] = 1;
+    for (int i = 2; i <= n; i++) {
+        if (mx_divisor[i]) continue;
+        for (int j = i; j <= n; j += i) {
+            if (mx_divisor[j]) continue;
+            mx_divisor[j] = j / i;
+        }
+    }
 }
