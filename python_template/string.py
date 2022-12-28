@@ -26,8 +26,8 @@ def kmp(query: str, pattern: str) -> bool:
                 return i - m + 1
     return -1
 
-# Z算法
-def z_function(s: str) -> List[int]:
+# Z函数(字符串s[i]开头的后缀与本字符串的最长公共前缀)
+def z_func(s: str) -> List[int]:
     n = len(s)
     z = [0] * n
     l, r = 0, 0

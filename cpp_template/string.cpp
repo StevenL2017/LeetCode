@@ -69,3 +69,21 @@ int kmp(string query, string pattern) {
     }
     return -1;
 }
+
+// Z函数(字符串s[i]开头的后缀与本字符串的最长公共前缀)
+vector<int> z_func(string& s) {
+    int n = s.size(), L = -1, R = -1;
+    vector<int> z(n);
+    z[0] = n;
+    for(int i = 1; i < n; i++) {
+        if(i <= R)
+            z[i] = min(z[i - L], R - i + 1);
+        while(i + z[i] < n && s[i + z[i]] == s[z[i]])
+            z[i]++;
+        if(i + z[i] - 1 > R) {
+            L = i;
+            R = i + z[i] - 1;
+        }
+    }
+    return z;
+}
