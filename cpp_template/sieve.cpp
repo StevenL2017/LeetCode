@@ -23,7 +23,7 @@ int eratosthenes(int n) {
             primes[p++] = i;
             if ((long long)i * i <= n) {
                 for (int j = i * i; j <= n; j += i) {
-                    is_prime[i] = 0;
+                    is_prime[j] = 0;
                 }
             }
         }
