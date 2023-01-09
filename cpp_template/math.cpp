@@ -54,6 +54,18 @@ bool is_prime(int x) {
     return true;    
 }
 
+long long euler_phi(long long n) {
+    long long ans = n;
+    for (long long i = 2; i * i <= n; i++) {
+        if (n % i == 0) {
+            ans = ans / i * (i - 1);
+            while (n % i == 0) n /= i;
+        }
+    }
+    if (n > 1) ans = ans / n * (n - 1);
+    return ans;
+}
+
 long long ap_an(int a1, int d, int n) {
     return (long long)(1ll * a1 + 1ll * (n - 1) * d);
 }
