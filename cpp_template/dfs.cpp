@@ -56,7 +56,7 @@ function<void(int, int)> dfs_loop = [&] (int node, int fa) {
     for (auto& nxt: graph[node]) {
         if (nxt == fa) continue;
         if (depth[nxt] == -1) dfs_loop(nxt, node);
-        if (depth[node] > depth[nxt]) {
+        if (depth[node] > depth[nxt] && loop.empty()) {
             for (int i = node; i != parent[nxt]; i = parent[i]) {
                 loop.push_back(i);
             }
