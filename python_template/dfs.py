@@ -22,7 +22,7 @@ def dfs_sub(n, graph):
         return sz
     dfs(0, -1)
 
-# DFS找唯一环
+# 连通无向图找环
 def dfs_loop(n, graph):
     # 编号 1 ~ n
     father = [0] * (n + 1)

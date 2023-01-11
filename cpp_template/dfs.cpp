@@ -31,11 +31,11 @@ function<bool(int, int)> is_parent = [&] (int node, int target) -> bool {
 int d = 0;
 vector<int> d1(n), d2(n);
 
-function<void(int, int)> diameter = [&] (int node, int fa) {
+function<void(int, int)> dfs_dia = [&] (int node, int fa) {
     d1[node] = d2[node] = 0;
     for (auto& nxt: graph[node]) {
         if (nxt == fa) continue;
-        diameter(nxt, node);
+        dfs_dia(nxt, node);
         int t = d1[nxt] + 1;
         if (t > d1[node]) {
             d2[node] = d1[node];
@@ -46,4 +46,20 @@ function<void(int, int)> diameter = [&] (int node, int fa) {
         }
     }
     d = max(d, d1[node] + d2[node]);
+};
+
+// find loop for a connected undirected graph
+vector<int> parent(n, -1), depth(n, -1), loop;
+function<void(int, int)> dfs_loop = [&] (int node, int fa) {
+    parent[node] = fa;
+    depth[node] = fa >= 0 ? depth[fa] + 1 : 0;
+    for (auto& nxt: graph[node]) {
+        if (nxt == fa) continue;
+        if (depth[nxt] == -1) dfs_loop(nxt, node);
+        if (depth[node] > depth[nxt]) {
+            for (int i = node; i != parent[nxt]; i = parent[i]) {
+                loop.push_back(i);
+            }
+        }
+    }
 };
