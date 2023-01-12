@@ -124,15 +124,13 @@ public:
 };
 
 // 单点更新-自定义结点
+const int N = 2e5 + 3;
+
+int a[N];
+
 struct Node {
     int val = 0;
 };
-
-Node merge(const Node& u, const Node& v) {
-    Node p;
-    p.val = u.val + v.val;
-    return p;
-}
 
 class SegmentTree {
 private:
@@ -141,6 +139,23 @@ private:
 public:
     SegmentTree(int n) {
         s.resize(n * 4);
+    }
+
+    Node merge(const Node& u, const Node& v) {
+        Node p;
+        p.val = u.val + v.val;
+        return p;
+    }
+
+    void build(int root, int l, int r) {
+        if (l == r) {
+            s[root].val = a[l];
+            return;
+        }
+        int m = l + (r - l) / 2;
+        build(root * 2, l, m);
+        build(root * 2 + 1, m + 1, r);
+        s[root] = merge(s[root * 2], s[root * 2 + 1]);
     }
     
     void update(int root, int l, int r, int idx, int val) {
