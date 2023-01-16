@@ -1,5 +1,5 @@
 const int MOD = 998244353;
-const int MAXN = 1e5 + 7;
+const int MAXN = 1e6 + 3;
 
 int factorial[MAXN];
 
@@ -8,11 +8,11 @@ int add(int x, int y) {
     while (x >= MOD) x -= MOD;
     while (x < 0) x += MOD;
     return x;
-}   
+}
 
 int sub(int x, int y) {
     return add(x, -y);
-}   
+}
 
 int mul(int x, int y) {
     return (x * 1ll * y) % MOD;
@@ -20,8 +20,7 @@ int mul(int x, int y) {
 
 int binpow(int x, int y) {
     int z = 1;
-    while (y)
-    {
+    while (y) {
         if (y & 1) z = mul(z, x);
         x = mul(x, x);
         y >>= 1;
@@ -39,7 +38,7 @@ int divide(int x, int y) {
 
 void get_factorial() {
 	factorial[0] = 1;
-	for(int i = 1; i < MAXN; i++) factorial[i] = mul(i, factorial[i - 1]);
+	for (int i = 1; i < MAXN; i++) factorial[i] = mul(i, factorial[i - 1]);
 }
 
 int comb(int n, int k) {
