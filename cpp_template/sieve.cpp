@@ -5,12 +5,12 @@ using namespace std;
 
 const int MAXN = 2e7 + 3;
 
-int primes[MAXN]; // list of primes
-int is_prime[MAXN]; // if it is prime
-int mn_prime[MAXN]; // min prime factor
-int nxt_prime[MAXN]; // next prime factor, can be used to iterate all prime factors of positive integers
-int cnt_prime[MAXN]; // count of different prime factors
-int mx_divisor[MAXN]; // max factor
+int primes[MAXN + 1]; // list of primes
+int is_prime[MAXN + 1]; // if it is prime
+int mn_prime[MAXN + 1]; // min prime factor
+int nxt_prime[MAXN + 1]; // next prime factor, can be used to iterate all prime factors of positive integers
+int cnt_prime[MAXN + 1]; // count of different prime factors
+int mx_divisor[MAXN + 1]; // max factor
 
 int eratosthenes(int n) {
     int p = 0; // count of primes for less or equal than n
