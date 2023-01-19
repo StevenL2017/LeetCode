@@ -29,21 +29,21 @@ int binpow(int x, int y) {
 }
 
 int inv(int x) {
-	return binpow(x, MOD - 2);
+    return binpow(x, MOD - 2);
 }
 
 int divide(int x, int y) {
-	return mul(x, inv(y));
+    return mul(x, inv(y));
 }
 
 void get_factorial() {
-	factorial[0] = 1;
-	for (int i = 1; i < MAXN; i++) factorial[i] = mul(i, factorial[i - 1]);
+    factorial[0] = 1;
+    for (int i = 1; i < MAXN; i++) factorial[i] = mul(i, factorial[i - 1]);
 }
 
 int comb(int n, int k) {
-	if (k > n) return 0;
-	return divide(factorial[n], mul(factorial[n - k], factorial[k]));
+    if (k > n) return 0;
+    return divide(factorial[n], mul(factorial[n - k], factorial[k]));
 }
 
 int fact[MAXN];
@@ -78,10 +78,10 @@ void precompute(int n) {
         inv_[i] = fastexp(fact[i], MOD - 2);
     }
     for (int i = 0; i <= n; i++)
+        pow2[i] = fastexp(2, i);
+    for (int i = 0; i <= n; i++)
         for (int j = 0; j <= i; j++)
             c[i][j] = mul(mul(fact[i], inv_[j]), inv_[i - j]);
-    for (int i = 0; i <= n; i++)
-        pow2[i] = fastexp(2, i);
 }
 
 bool is_prime(int x) {
