@@ -46,6 +46,44 @@ int comb(int n, int k) {
 	return divide(factorial[n], mul(factorial[n - k], factorial[k]));
 }
 
+int fact[MAXN];
+int inv_[MAXN];
+int pow2[MAXN];
+int c[MAXN][MAXN];
+
+int add(int x, int y) {
+    x += y;
+    while (x >= MOD) x -= MOD;
+    while (x < 0) x += MOD;
+    return x;
+}
+
+int mul(int x, int y) {
+    return (x * 1ll * y) % MOD;
+}
+
+int fastexp(int b, int exp) {
+    if (exp == 0) return 1;
+    int temp = fastexp(b, exp / 2);
+    temp = mul(temp, temp);
+    if (exp % 2 == 1) temp = mul(temp, b);
+    return temp;
+}
+
+void precompute(int n) {
+    fact[0] = 1;
+    inv_[0] = 1;
+    for (int i = 1; i <= n; i++) {
+        fact[i] = mul(fact[i - 1], i);
+        inv_[i] = fastexp(fact[i], MOD - 2);
+    }
+    for (int i = 0; i <= n; i++)
+        for (int j = 0; j <= i; j++)
+            c[i][j] = mul(mul(fact[i], inv_[j]), inv_[i - j]);
+    for (int i = 0; i <= n; i++)
+        pow2[i] = fastexp(2, i);
+}
+
 bool is_prime(int x) {
     for (int i = 2; i * 1ll * i <= x; i++)
         if (x % i == 0)
