@@ -33,18 +33,19 @@ struct Matrix {
 
     Matrix() { memset(a, 0, sizeof(a)); }
 
+    // i k j could be faster than i j k
     Matrix operator*(const Matrix& b) const {
         Matrix res;
         for (int i = 1; i <= N; ++i)
-            for (int j = 1; j <= N; ++j)
-                for (int k = 1; k <= N; ++k)
+            for (int k = 1; k <= N; ++k)
+                for (int j = 1; j <= N; ++j)
                     res.a[i][j] = (res.a[i][j] + a[i][k] * b.a[k][j]) % MOD;
         return res;
     }
 } ans, base;
 
 // this is an example of f[n] = f[n - 1] + f[n - 2] (Fibonacci dp)
-// answer f[n] = ans.a[1][1]
+// answer is ans.a[1][1]
 void init() {
     base.a[1][1] = base.a[1][2] = base.a[2][1] = 1;
     ans.a[1][1] = ans.a[1][2] = 1;
@@ -60,7 +61,7 @@ void qpow(long long n) {
 }
 
 // this is an example of f[n] = f[n - 1] + f[n - m]
-// answer f[n] = sum(ans.a[1][i])
+// answer is sum(ans.a[1][i])
 void init(int m) {
     base.a[1][1] = base.a[m][1] = 1;
     ans.a[1][1] = ans.a[m][1] = 1;
