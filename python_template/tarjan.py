@@ -33,7 +33,7 @@ def tarjan_edge(n, edges):
     return res
 
 # Tarjan算法割点
-def tarjan_edge(n, edges):
+def tarjan_node(n, edges):
     graph = defaultdict(set)
     for a, b in edges:
         graph[a].add(b)
