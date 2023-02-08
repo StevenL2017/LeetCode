@@ -32,7 +32,7 @@ class SegmentTree:
 class SegmentTree:
     def __init__(self, n: int):
         self.n = n
-        self.max = [0] * (n * 4)
+        self.max = [float('-inf')] * (n * 4)
     
     def update(self, root, l, r, idx, val):
         if l == r:
@@ -48,7 +48,7 @@ class SegmentTree:
     def query(self, root, l, r, L, R):
         if L <= l and r <= R:
             return self.max[root]
-        ans = 0
+        ans = float('-inf')
         m = (l + r) // 2
         if L <= m:
             ans = self.query(root * 2, l, m, L, R)

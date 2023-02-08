@@ -10,7 +10,7 @@ private:
 
 public:
     SegmentTree(int n) {
-        sum.resize(n * 4);
+        sum.resize(n * 4, 0);
     }
     
     void update(int root, int l, int r, int idx, int val) {
@@ -50,7 +50,7 @@ private:
 
 public:
     SegmentTree(int n) {
-        mx.resize(n * 4);
+        mx.resize(n * 4, -2e9);
     }
     
     void update(int root, int l, int r, int idx, int val) {
@@ -71,7 +71,7 @@ public:
         if (L <= l && r <= R) {
             return mx[root];
         }
-        int ans = 0;
+        int ans = -2e9;
         int m = l + (r - l) / 2;
         if (L <= m) {
             ans = query(root * 2, l, m, L, R);
@@ -90,7 +90,7 @@ private:
 
 public:
     SegmentTree(int n) {
-        mn.resize(n * 4);
+        mn.resize(n * 4, 2e9);
     }
     
     void update(int root, int l, int r, int idx, int val) {
