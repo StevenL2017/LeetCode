@@ -124,6 +124,8 @@ public:
 };
 
 // 单点更新-自定义结点
+
+// 单个元素修改为某值 + 区间求和
 const int N = 2e5 + 3;
 
 int a[N];
@@ -137,8 +139,11 @@ private:
     vector<Node> s;
 
 public:
+    SegmentTree() {}
+
     SegmentTree(int n) {
         s.resize(n * 4);
+        build(1, 1, n);
     }
 
     Node merge(const Node& u, const Node& v) {
@@ -188,6 +193,239 @@ public:
 };
 
 // 区间更新-自定义结点
+// 范围为左闭右闭区间
+
+// 区间每个元素加上某值 + 区间求和
+const int N = 2e5 + 3;
+
+int a[N];
+
+struct Node {
+    int l = 0, r = 0;
+    long long val = 0, lazy = 0;
+};
+
+class SegmentTree {
+private:
+    vector<Node> s;
+
+public:
+    SegmentTree() {}
+
+    SegmentTree(int n) {
+        s.resize(n * 4);
+        build(1, 1, n);
+    }
+
+    void push(int root) {
+        auto l = s[root].l, r = s[root].r;
+        if (l != r && s[root].lazy) {
+            auto m = l + (r - l) / 2;
+            s[root * 2].val += s[root].lazy * (m - l + 1);
+            s[root * 2].lazy += s[root].lazy;
+            s[root * 2 + 1].val += s[root].lazy * (r - m);
+            s[root * 2 + 1].lazy += s[root].lazy;
+            s[root].lazy = 0;
+        }
+    }
+
+    void merge(int root) {
+        s[root].val = s[root * 2].val + s[root * 2 + 1].val;
+    }
+
+    void build(int root, int l, int r) {
+        s[root].l = l, s[root].r = r;
+        if (l == r) {
+            s[root].val = a[l];
+            return;
+        }
+        int m = l + (r - l) / 2;
+        build(root * 2, l, m);
+        build(root * 2 + 1, m + 1, r);
+        merge(root);
+    }
+    
+    void update(int root, int L, int R, int val) {
+        auto l = s[root].l, r = s[root].r;
+        if (L <= l && r <= R) {
+            s[root].val += val * (r - l + 1);
+            s[root].lazy += val;
+            return;
+        }
+        push(root);
+        int m = l + (r - l) / 2;
+        if (L <= m) update(root * 2, L, R, val);
+        if (R > m) update(root * 2 + 1, L, R, val);
+        merge(root);
+    }
+    
+    long long query(int root, int L, int R) {
+        auto l = s[root].l, r = s[root].r;
+        if (L <= l && r <= R) {
+            return s[root].val;
+        }
+        push(root);
+        long long ans = 0;
+        int m = l + (r - l) / 2;
+        if (L <= m) ans += query(root * 2, L, R);
+        if (R > m) ans += query(root * 2 + 1, L, R);
+        return ans;
+    }
+};
+
+// 区间每个元素修改为某值 + 区间求和
+const int N = 2e5 + 3;
+
+int a[N];
+
+struct Node {
+    int l = 0, r = 0;
+    long long val = 0, lazy = 0;
+};
+
+class SegmentTree {
+private:
+    vector<Node> s;
+
+public:
+    SegmentTree() {}
+
+    SegmentTree(int n) {
+        s.resize(n * 4);
+        build(1, 1, n);
+    }
+
+    void push(int root) {
+        auto l = s[root].l, r = s[root].r;
+        if (l != r && s[root].lazy) {
+            auto m = l + (r - l) / 2;
+            s[root * 2].val = s[root].lazy * (m - l + 1);
+            s[root * 2].lazy = s[root].lazy;
+            s[root * 2 + 1].val = s[root].lazy * (r - m);
+            s[root * 2 + 1].lazy = s[root].lazy;
+            s[root].lazy = 0;
+        }
+    }
+
+    void merge(int root) {
+        s[root].val = s[root * 2].val + s[root * 2 + 1].val;
+    }
+
+    void build(int root, int l, int r) {
+        s[root].l = l, s[root].r = r;
+        if (l == r) {
+            s[root].val = a[l];
+            return;
+        }
+        int m = l + (r - l) / 2;
+        build(root * 2, l, m);
+        build(root * 2 + 1, m + 1, r);
+        merge(root);
+    }
+    
+    void update(int root, int L, int R, int val) {
+        auto l = s[root].l, r = s[root].r;
+        if (L <= l && r <= R) {
+            s[root].val = val * (r - l + 1);
+            s[root].lazy = val;
+            return;
+        }
+        push(root);
+        int m = l + (r - l) / 2;
+        if (L <= m) update(root * 2, L, R, val);
+        if (R > m) update(root * 2 + 1, L, R, val);
+        merge(root);
+    }
+    
+    long long query(int root, int L, int R) {
+        auto l = s[root].l, r = s[root].r;
+        if (L <= l && r <= R) {
+            return s[root].val;
+        }
+        push(root);
+        long long ans = 0;
+        int m = l + (r - l) / 2;
+        if (L <= m) ans += query(root * 2, L, R);
+        if (R > m) ans += query(root * 2 + 1, L, R);
+        return ans;
+    }
+};
+
+// 区间每个元素0/1反转 + 区间求和
+struct Node {
+    int l = 0, r = 0;
+    int val = 0, lazy = 0;
+};
+
+class SegmentTree {
+private:
+    vector<Node> s;
+
+public:
+    SegmentTree() {}
+
+    SegmentTree(int n) {
+        s.resize(n * 4);
+        build(1, 1, n);
+    }
+
+    void push(int root) {
+        auto l = s[root].l, r = s[root].r;
+        if (l != r && s[root].lazy) {
+            auto m = l + (r - l) / 2;
+            s[root * 2].val = (m - l + 1) - s[root * 2].val;
+            s[root * 2].lazy ^= 1;
+            s[root * 2 + 1].val = (r - m) - s[root * 2 + 1].val;
+            s[root * 2 + 1].lazy ^= 1;
+            s[root].lazy = 0;
+        }
+    }
+
+    void merge(int root) {
+        s[root].val = s[root * 2].val + s[root * 2 + 1].val;
+    }
+
+    void build(int root, int l, int r) {
+        s[root].l = l, s[root].r = r;
+        if (l == r) {
+            s[root].val = 0;
+            return;
+        }
+        int m = l + (r - l) / 2;
+        build(root * 2, l, m);
+        build(root * 2 + 1, m + 1, r);
+        merge(root);
+    }
+    
+    void update(int root, int L, int R) {
+        auto l = s[root].l, r = s[root].r;
+        if (L <= l && r <= R) {
+            s[root].val = (r - l + 1) - s[root].val;
+            s[root].lazy ^= 1;
+            return;
+        }
+        push(root);
+        int m = l + (r - l) / 2;
+        if (L <= m) update(root * 2, L, R);
+        if (R > m) update(root * 2 + 1, L, R);
+        merge(root);
+    }
+    
+    int query(int root, int L, int R) {
+        auto l = s[root].l, r = s[root].r;
+        if (L <= l && r <= R) {
+            return s[root].val;
+        }
+        push(root);
+        int ans = 0;
+        int m = l + (r - l) / 2;
+        if (L <= m) ans += query(root * 2, L, R);
+        if (R > m) ans += query(root * 2 + 1, L, R);
+        return ans;
+    }
+};
+
+// 区间每个元素修改为某值（不等于0） + 区间求最小值
 const int N = 2e5 + 3;
 
 int a[N];
@@ -197,23 +435,28 @@ struct Node {
     long long val = LLONG_MAX, lazy = 0;
 };
 
-// 范围为左闭右闭区间
 class SegmentTree {
 private:
     vector<Node> s;
 
 public:
+    SegmentTree() {}
+
     SegmentTree(int n) {
         s.resize(n * 4);
+        build(1, 1, n);
     }
 
     void push(int root) {
-        for (int i = 0; i < 2; i++) {
-            s[root * 2 + i].val += s[root].lazy;
-            s[root * 2 + i].lazy += s[root].lazy;
+        auto l = s[root].l, r = s[root].r;
+        if (l != r && s[root].lazy != 0) {
+            auto m = l + (r - l) / 2;
+            s[root * 2].val = s[root].lazy;
+            s[root * 2].lazy = s[root].lazy;
+            s[root * 2 + 1].val = s[root].lazy;
+            s[root * 2 + 1].lazy = s[root].lazy;
+            s[root].lazy = 0;
         }
-        s[root].lazy = 0;
-        merge(root);
     }
 
     void merge(int root) {
@@ -232,17 +475,17 @@ public:
         merge(root);
     }
     
-    void update(int root, int L, int R, int delta) {
+    void update(int root, int L, int R, int val) {
         auto l = s[root].l, r = s[root].r;
         if (L <= l && r <= R) {
-            s[root].val += delta;
-            s[root].lazy += delta;
+            s[root].val = val;
+            s[root].lazy = val;
             return;
         }
         push(root);
         int m = l + (r - l) / 2;
-        if (L <= m) update(root * 2, L, R, delta);
-        if (R > m) update(root * 2 + 1, L, R, delta);
+        if (L <= m) update(root * 2, L, R, val);
+        if (R > m) update(root * 2 + 1, L, R, val);
         merge(root);
     }
     
@@ -279,34 +522,36 @@ void dfs(int node, int fa) {
     tout[node] = tt;
 }
 
-// 范围为左闭右开区间
+// 区间每个元素修改为某值 + 区间求状态值
 class SegmentTree {
 private:
-    vector<long long> mask; // 存储节点所代表的子树的状态，从下到上merge状态
-    vector<long long> add; // 存储节点所代表的子树的更新值，从上到下push更新值
+    vector<long long> s; // 存储节点所代表的子树的状态值，从下到上merge状态
+    vector<long long> lazy; // 存储节点所代表的子树的懒更新值，从上到下push更新值
 
 public:
+    SegmentTree() {}
+    
     SegmentTree(int n) {
-        mask.resize(n * 4);
-        add.resize(n * 4);
+        s.resize(n * 4);
+        lazy.resize(n * 4);
     }
 
     void push(int root) {
-        if (add[root] == -1) return;
+        if (lazy[root] == -1) return;
         for (int i = 0; i < 2; i++) {
-            mask[root * 2 + i] = add[root * 2 + i] = add[root];
+            s[root * 2 + i] = lazy[root * 2 + i] = lazy[root];
         }
-        add[root] = -1;
+        lazy[root] = -1;
     }
 
     void merge(int root) {
-        mask[root] = mask[root * 2] | mask[root * 2 + 1];
+        s[root] = s[root * 2] | s[root * 2 + 1];
     }
 
     void build(int root, int l, int r) {
-        add[root] = -1;
+        lazy[root] = -1;
         if (l + 1 == r) {
-            mask[root] = 1ll << status[pos[l]];
+            s[root] = 1ll << status[pos[l]];
             return;
         }
         int m = l + (r - l) / 2;
@@ -318,8 +563,8 @@ public:
     void update(int root, int l, int r, int L, int R, int val) {
         if (L >= R) return;
         if (L == l && r == R) {
-            mask[root] = 1ll << val;
-            add[root] = 1ll << val;
+            s[root] = 1ll << val;
+            lazy[root] = 1ll << val;
             return;
         }
         push(root);
@@ -332,7 +577,7 @@ public:
     long long query(int root, int l, int r, int L, int R) {
         if (L >= R) return 0;
         if (L == l && r == R) {
-            return mask[root];
+            return s[root];
         }
         push(root);
         long long ans = 0;
