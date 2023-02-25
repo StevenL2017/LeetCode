@@ -132,11 +132,11 @@ class SegmentTree:
         self.val[root] = self.val[root * 2] + self.val[root * 2 + 1]
     
     def update(self, root, l, r, L, R, val):
-        self.push(root, l, r)
         if L <= l and r <= R:
             self.val[root] += val * (r - l + 1)
             self.lazy[root] += val
             return
+        self.push(root, l, r)
         m = (l + r) // 2
         if L <= m:
             self.update(root * 2, l, m, L, R, val)
@@ -145,9 +145,9 @@ class SegmentTree:
         self.merge(root)
     
     def query(self, root, l, r, L, R):
-        self.push(root, l, r)
         if L <= l and r <= R:
             return self.val[root]
+        self.push(root, l, r)
         ans = 0
         m = (l + r) // 2
         if L <= m:
@@ -176,11 +176,11 @@ class SegmentTree:
         self.val[root] = self.val[root * 2] + self.val[root * 2 + 1]
     
     def update(self, root, l, r, L, R, val):
-        self.push(root, l, r)
         if L <= l and r <= R:
             self.val[root] = val * (r - l + 1)
             self.lazy[root] = val
             return
+        self.push(root, l, r)
         m = (l + r) // 2
         if L <= m:
             self.update(root * 2, l, m, L, R, val)
@@ -189,9 +189,9 @@ class SegmentTree:
         self.merge(root)
     
     def query(self, root, l, r, L, R):
-        self.push(root, l, r)
         if L <= l and r <= R:
             return self.val[root]
+        self.push(root, l, r)
         ans = 0
         m = (l + r) // 2
         if L <= m:
@@ -220,11 +220,11 @@ class SegmentTree:
         self.val[root] = self.val[root * 2] + self.val[root * 2 + 1]
     
     def update(self, root, l, r, L, R):
-        self.push(root, l, r)
         if L <= l and r <= R:
             self.val[root] = (r - l + 1) - self.val[root]
             self.lazy[root] ^= 1
             return
+        self.push(root, l, r)
         m = (l + r) // 2
         if L <= m:
             self.update(root * 2, l, m, L, R)
@@ -233,9 +233,9 @@ class SegmentTree:
         self.merge(root)
     
     def query(self, root, l, r, L, R):
-        self.push(root, l, r)
         if L <= l and r <= R:
             return self.val[root]
+        self.push(root, l, r)
         ans = 0
         m = (l + r) // 2
         if L <= m:
