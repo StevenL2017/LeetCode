@@ -1,8 +1,6 @@
 const int MOD = 998244353;
 const int MAXN = 1e6 + 3;
 
-int factorial[MAXN];
-
 int add(int x, int y) {
     x += y;
     while (x >= MOD) x -= MOD;
@@ -36,6 +34,8 @@ int divide(int x, int y) {
     return mul(x, inv(y));
 }
 
+int factorial[MAXN];
+
 void get_factorial() {
     factorial[0] = 1;
     for (int i = 1; i < MAXN; i++) factorial[i] = mul(i, factorial[i - 1]);
@@ -44,6 +44,27 @@ void get_factorial() {
 int comb(int n, int k) {
     if (k > n) return 0;
     return divide(factorial[n], mul(factorial[n - k], factorial[k]));
+}
+
+int inverse[MAXN];
+
+void get_inverse() {
+    inverse[0] = 1;
+    for (int i = 1; i < MAXN; i++) {
+        inverse[i] = inv(i);
+    }
+}
+
+int comb(long long n, int k) {
+    if (k > n) return 0;
+    if (n - k < k) k = n - k;
+    n %= MOD;
+    int ans = 1;
+    for (int i = 0; i < k; i++) {
+        ans = mul(ans, n - i);
+        ans = mul(ans, inverse[i + 1]);
+    } 
+    return ans;
 }
 
 int fact[MAXN];
