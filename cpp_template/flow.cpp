@@ -11,7 +11,7 @@ const int MAXN = 2e2 + 3;
 struct Dinic {
     struct Edge {
         int v, nxt, cap, flow;
-    } e[MAXN];
+    } e[MAXN * MAXN];
 
     int n, m;
     int fir[MAXN];
