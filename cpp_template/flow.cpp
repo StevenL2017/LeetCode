@@ -1,3 +1,5 @@
+#include <climits>
+#include <cstring>
 #include <vector>
 #include <queue>
 
@@ -5,13 +7,81 @@ using namespace std;
 
 const int MAXN = 2e2 + 3;
 
-struct Edge {
-    int from, to, cap, flow;
-    Edge(int u, int v, int c, int f) : from(u), to(v), cap(c), flow(f) {}
+// Dinic 算法
+struct Dinic {
+    struct Edge {
+        int v, nxt, cap, flow;
+    } e[MAXN];
+
+    int n, m;
+    int fir[MAXN];
+    int dep[MAXN];
+    int cur[MAXN];
+
+    void init(int n) {
+        memset(fir, -1, sizeof(fir));
+        m = 0;
+        this->n = n;
+    }
+
+    void add_edge(int u, int v, int w) {
+        e[m] = {v, fir[u], w, 0};
+        fir[u] = m++;
+        e[m] = {u, fir[v], 0, 0};
+        fir[v] = m++;
+    }
+
+    bool bfs(int s, int t) {
+        queue<int> q;
+        memset(dep, 0, sizeof(int) * (n + 1));
+        dep[s] = 1;
+        q.push(s);
+        while (!q.empty()) {
+            int u = q.front();
+            q.pop();
+            for (int i = fir[u]; ~i; i = e[i].nxt) {
+                int v = e[i].v;
+                if ((!dep[v]) && (e[i].cap > e[i].flow)) {
+                    dep[v] = dep[u] + 1;
+                    q.push(v);
+                }
+            }
+        }
+        return dep[t];
+    }
+
+    int dfs(int u, int t, int bound) {
+        if ((u == t) || (!bound)) return bound;
+        int ret = 0;
+        for (int& i = cur[u]; ~i; i = e[i].nxt) {
+            int v = e[i].v, d;
+            if ((dep[v] == dep[u] + 1) && (d = dfs(v, t, min(bound - ret, e[i].cap - e[i].flow)))) {
+                ret += d;
+                e[i].flow += d;
+                e[i ^ 1].flow -= d;
+                if (ret == bound) return ret;
+            }
+        }
+        return ret;
+    }
+
+    int max_flow(int s, int t) {
+        int flow = 0;
+        while (bfs(s, t)) {
+            memcpy(cur, fir, sizeof(int) * (n + 1));
+            flow += dfs(s, t, INT_MAX);
+        }
+        return flow;
+    }
 };
 
 // Edmonds-Karp 算法
 struct EK {
+    struct Edge {
+        int from, to, cap, flow;
+        Edge(int u, int v, int c, int f) : from(u), to(v), cap(c), flow(f) {}
+    };
+
     int n, m;             // n：点数，m：边数
     vector<Edge> edges;   // edges：所有边的集合
     vector<int> G[MAXN];  // G：点 x -> x 的所有边在 edges 中的下标
@@ -58,72 +128,6 @@ struct EK {
                 edges[p[u] ^ 1].flow -= a[t];  // 减小反向路径的 flow 值
             }
             flow += a[t];
-        }
-        return flow;
-    }
-};
-
-// Dinic 算法
-struct Dinic {
-    int n, m;
-    vector<Edge> e;
-    int fir[MAXN];
-    int dep[MAXN];
-    int cur[MAXN];
-
-    void init(int n) {
-        this->n = n;
-        this->m = 0;
-        memset(fir, -1, sizeof(int) * n);
-        e.clear();
-    }
-
-    void add_edge(int from, int to, int cap) {
-        e.push_back(Edge(to, fir[from], cap, 0));
-        fir[from] = m++;
-        e.push_back(Edge(from, fir[to], 0, 0));
-        fir[to] = m++;
-    }
-
-    bool bfs(int s, int t) {
-        queue<int> q;
-        memset(dep, 0, sizeof(int) * n);
-        dep[s] = 1;
-        q.push(s);
-        while (q.size()) {
-            int u = q.front();
-            q.pop();
-            for (int i = fir[u]; ~i; i = e[i].to) {
-                int v = e[i].from;
-                if ((!dep[v]) && (e[i].cap > e[i].flow)) {
-                    dep[v] = dep[u] + 1;
-                    q.push(v);
-                }
-            }
-        }
-        return dep[t];
-    }
-
-    int dfs(int u, int t, int bound) {
-        if ((u == t) || (!bound)) return bound;
-        int ret = 0;
-        for (int& i = cur[u]; ~i; i = e[i].to) {
-            int v = e[i].from, d;
-            if ((dep[v] == dep[u] + 1) && (d = dfs(v, t, min(bound - ret, e[i].cap - e[i].flow)))) {
-                ret += d;
-                e[i].flow += d;
-                e[i ^ 1].flow -= d;
-                if (ret == bound) return ret;
-            }
-        }
-        return ret;
-    }
-
-    int max_flow(int s, int t) {
-        int flow = 0;
-        while (bfs(s, t)) {
-            memcpy(cur, fir, sizeof(int) * n);
-            flow += dfs(s, t, INT_MAX);
         }
         return flow;
     }
