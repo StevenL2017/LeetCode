@@ -72,21 +72,22 @@ struct Dinic {
     int cur[MAXN];
 
     void init(int n) {
-        for (int i = 0; i < n; i++) fir[i] = -1;
+        this->n = n;
+        this->m = 0;
+        memset(fir, -1, sizeof(int) * n);
         e.clear();
-        m = 0;
     }
 
-    void add_edge(int u, int v, int w) {
-        e[m] = {v, fir[u], w, 0};
-        fir[u] = m++;
-        e[m] = {u, fir[v], 0, 0};
-        fir[v] = m++;
+    void add_edge(int from, int to, int cap) {
+        e.push_back(Edge(to, fir[from], cap, 0));
+        fir[from] = m++;
+        e.push_back(Edge(from, fir[to], 0, 0));
+        fir[to] = m++;
     }
 
     bool bfs(int s, int t) {
         queue<int> q;
-        memset(dep, 0, sizeof(int) * (n + 1));
+        memset(dep, 0, sizeof(int) * n);
         dep[s] = 1;
         q.push(s);
         while (q.size()) {
@@ -103,16 +104,16 @@ struct Dinic {
         return dep[t];
     }
 
-    int dfs(int u, int t, int flow) {
-        if ((u == t) || (!flow)) return flow;
+    int dfs(int u, int t, int bound) {
+        if ((u == t) || (!bound)) return bound;
         int ret = 0;
         for (int& i = cur[u]; ~i; i = e[i].to) {
             int v = e[i].from, d;
-            if ((dep[v] == dep[u] + 1) && (d = dfs(v, t, min(flow - ret, e[i].cap - e[i].flow)))) {
+            if ((dep[v] == dep[u] + 1) && (d = dfs(v, t, min(bound - ret, e[i].cap - e[i].flow)))) {
                 ret += d;
                 e[i].flow += d;
                 e[i ^ 1].flow -= d;
-                if (ret == flow) return ret;
+                if (ret == bound) return ret;
             }
         }
         return ret;
@@ -121,7 +122,7 @@ struct Dinic {
     int max_flow(int s, int t) {
         int flow = 0;
         while (bfs(s, t)) {
-            memcpy(cur, fir, sizeof(int) * (n + 1));
+            memcpy(cur, fir, sizeof(int) * n);
             flow += dfs(s, t, INT_MAX);
         }
         return flow;
