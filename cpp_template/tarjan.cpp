@@ -12,8 +12,8 @@ vector<int> e[MAXN];
 int dfn[MAXN], low[MAXN], tt;
 // bridge: 割边答案
 set<pair<int, int>> bridge;
-// ans: 割点答案
-bool ans[MAXN];
+// node: 割点答案
+set<int> node;
 
 // 因为 Tarjan 图不一定连通
 // 遍历所有节点，所有未访问过的节点跑Tarjan
@@ -49,10 +49,10 @@ void tarjan_node(int u, int p) {
             tarjan_node(v, u);
             low[u] = min(low[u], low[v]); // 更新能到的最小节点编号
             if (p == -1 && child > 1) {
-                ans[u] = true;
+                node.insert(u);
             }
             else if (p != -1 && low[v] >= dfn[u]) {
-                ans[u] = true;
+                node.insert(u);
             }
         } else {
             low[u] = min(low[u], dfn[v]); // 更新能到的最小节点编号
