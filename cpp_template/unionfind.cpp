@@ -4,13 +4,12 @@ using namespace std;
 
 // 路径压缩 + 启发式合并
 class UnionFind {
-private:
+public:
     int N;
     int *f;
     int *sz;
     int count;
-
-public:
+    
     UnionFind(int n) :
         N(n), count(n) {
         f = new int[N]();

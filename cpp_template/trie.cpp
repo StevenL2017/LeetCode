@@ -5,11 +5,10 @@ using namespace std;
 
 // 数组实现字母字典树
 class Trie {
-private:
+public:
     vector<Trie*> children;
     bool isEnd;
 
-public:
     Trie() : children(26), isEnd(false) {}
 
     void insert(string word) {
@@ -44,13 +43,12 @@ public:
 
 // 0-1字典树
 class Trie {
-private:
+public:
     int L;
     Trie* left;
     Trie* right;
     long long cnt;
 
-public:
     Trie() : L(31), left(nullptr), right(nullptr), cnt(0) {}
 
     void insert(long long val) {
