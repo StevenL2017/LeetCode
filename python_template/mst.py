@@ -1,4 +1,4 @@
-from unionfind import *
+from python_template.dsu import *
 
 # Kruskal算法
 def kruskal(n, edges):

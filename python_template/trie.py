@@ -27,69 +27,60 @@ class Trie:
         return node
 
 # 0-1字典树
+HIGH_BIT = 31
+
 class Trie:
     def __init__(self):
-        self.L = 31
-        self.left = None
-        self.right = None
+        self.children = [None] * 2
         self.cnt = 0
-        
+    
     def insert(self, val: int) -> None:
         node = self
-        for i in range(self.L, -1, -1):
-            if not val & (1 << i):
-                if not node.left:
-                    node.left = Trie()
-                node = node.left
-            else:
-                if not node.right:
-                    node.right = Trie()
-                node = node.right
+        for i in range(HIGH_BIT, -1, -1):
+            bit = val >> i & 1
+            if not node.children[bit]:
+                node.children[bit] = Trie()
+            node = node.children[bit]
             node.cnt += 1
     
     def query_maxor(self, val: int) -> int:
-        node = self
         ans = 0
-        for i in range(self.L, -1, -1):
-            if not node:
+        node = self
+        for i in range(HIGH_BIT, -1, -1):
+            bit = val >> i & 1
+            if node.children[bit ^ 1]:
+                ans |= 1 << i
+                bit ^= 1
+            if not node.children[bit]:
                 return ans
-            if val & (1 << i):
-                if node.left and node.left.cnt:
-                    ans |= (1 << i)
-                    node = node.left
-                else:
-                    node = node.right
-            else:
-                if node.right and node.right.cnt:
-                    ans |= (1 << i)
-                    node = node.right
-                else:
-                    node = node.left
+            node = node.children[bit]
         return ans
     
-    def query_cnt(self, val: int, limit: int) -> int:
-        # 严格小于limit的数对异或值数量
-        node = self
+    # 小于等于limit的数对异或值数量
+    def query_le(self, val: int, limit: int) -> int:
         ans = 0
-        for i in range(self.L, -1, -1):
-            if node is None:
-                break
-            cur = val & (1 << i)
-            if limit & (1 << i):
-                if not cur and node.left:
-                    ans += node.left.cnt
-                if cur and node.right:
-                    ans += node.right.cnt
-                node = node.left if cur else node.right
+        node = self
+        for i in range(HIGH_BIT, -1, -1):
+            bit = val >> i & 1
+            if limit >> i & 1:
+                if node.children[bit]:
+                    ans += node.children[bit].cnt
+                if not node.children[bit ^ 1]:
+                    return ans
+                node = node.children[bit ^ 1]
             else:
-                node = node.left if not cur else node.right
+                if not node.children[bit]:
+                    return ans
+                node = node.children[bit]
+        ans += node.cnt # 等于的情况
         return ans
     
     def remove(self, val: int) -> None:
         node = self
-        for i in range(self.L, -1, -1):
-            if not val & (1 << i):
-                node = node.left
-            else:
-                node = node.right
-            node.cnt -= 1
+        for i in range(HIGH_BIT, -1, -1):
+            bit = val >> i & 1
+            node.children[bit].cnt -= 1
+            if node.children[bit].cnt == 0:
+                node.children[bit] = None
+                break
+            node = node.children[bit]

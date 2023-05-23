@@ -42,94 +42,79 @@ public:
 };
 
 // 0-1字典树
+const int K = 31;
+
 class Trie {
 public:
-    int L;
-    Trie* left;
-    Trie* right;
-    long long cnt;
+    vector<Trie*> children;
+    int cnt;
 
-    Trie() : L(31), left(nullptr), right(nullptr), cnt(0) {}
+    Trie() : children(2), cnt(0) {}
 
-    void insert(long long val) {
+    void insert(int val) {
         Trie* node = this;
-        for (int i = L; i >= 0; i--) {
-            if (!(val >> i & 1)) {
-                if (node->left == nullptr) {
-                    node->left = new Trie();
-                }
-                node = node->left;
-            } else {
-                if (node->right == nullptr) {
-                    node->right = new Trie();
-                }
-                node = node->right;
+        for (int i = K; i >= 0; i--) {
+            int bit = val >> i & 1;
+            if (node->children[bit] == nullptr) {
+                node->children[bit] = new Trie();
             }
+            node = node->children[bit];
             node->cnt++;
         }
     }
 
-    long long query_maxor(long long val) {
+    int query_maxor(int val) {
+        int ans = 0;
         Trie* node = this;
-        long long ans = 0;
-        for (int i = L; i >= 0; i--) {
-            if (node == nullptr) {
+        for (int i = K; i >= 0; i--) {
+            int bit = val >> i & 1;
+            if (node->children[bit ^ 1] != nullptr) {
+                ans |= 1 << i;
+                bit ^= 1;
+            }
+            if (node->children[bit] == nullptr) {
                 return ans;
             }
-            if (val >> i & 1) {
-                if (node->left != nullptr) {
-                    ans |= 1ll << i;
-                    node = node->left;
-                } else {
-                    node = node->right;
-                }
-            } else {
-                if (node->right != nullptr) {
-                    ans |= 1ll << i;
-                    node = node->right;
-                } else {
-                    node = node->left;
-                }
-            }
+            node = node->children[bit];
         }
         return ans;
     }
 
-    long long query_cnt(long long val, long long limit) {
-        // 严格小于limit的数对异或值数量
+    // 小于等于limit的数对异或值数量
+    int query_le(int val, int limit) {
+        int ans = 0;
         Trie* node = this;
-        long long ans = 0;
-        for (int i = L; i >= 0; i--) {
-            if (node == nullptr) {
+        for (int i = K; i >= 0; i--) {
+            int bit = val >> i & 1;
+            if (limit >> i & 1) {
+                if (node->children[bit] != nullptr) {
+                    ans += node->children[bit]->cnt;
+                }
+                if (node->children[bit ^ 1] == nullptr) {
+                    return ans;
+                }
+                node = node->children[bit ^ 1];
+            } else {
+                if (node->children[bit] == nullptr) {
+                    return ans;
+                }
+                node = node->children[bit];
+            }
+        }
+        ans += node->cnt; // 等于的情况
+        return ans;
+    }
+
+    void remove(int val) {
+        Trie* node = this;
+        for (int i = K; i >= 0; i--) {
+            int bit = val >> i & 1;
+            node->children[bit]->cnt--;
+            if (node->children[bit]->cnt == 0) {
+                node->children[bit] = nullptr;
                 break;
             }
-            auto cur = val >> i & 1;
-            if (limit >> i & 1) {
-                if (!cur && node->left != nullptr) {
-                    ans += node->left->cnt;
-                }
-                if (cur && node->right != nullptr) {
-                    ans += node->right->cnt;
-                }
-                if (cur) node = node->left;
-                else node = node->right;
-            } else {
-                if (!cur) node = node->left;
-                else node = node->right;
-            }
-        }
-        return ans;
-    }
-
-    void remove(long long val) {
-        Trie* node = this;
-        for (int i = L; i >= 0; i--) {
-            if (val >> i & 1) {
-                node = node->right;
-            } else {
-                node = node->left;
-            }
-            node->cnt--;
+            node = node->children[bit];
         }
     }
 };
