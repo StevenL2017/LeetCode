@@ -5,74 +5,62 @@
 
 using namespace std;
 
-const int MAXN = 2e2 + 3;
+const int MAXN = 200 + 10;
+const int INF = 1 << 30;
 
 // Dinic 算法
-struct Dinic {
-    struct Edge {
-        int v, nxt, cap, flow;
-    } e[MAXN * MAXN];
-
-    int n, m;
-    int fir[MAXN];
-    int dep[MAXN];
-    int cur[MAXN];
-
-    void init(int n) {
-        memset(fir, -1, sizeof(fir));
-        m = 0;
-        this->n = n;
-    }
-
-    void add_edge(int u, int v, int w) {
-        e[m] = {v, fir[u], w, 0};
-        fir[u] = m++;
-        e[m] = {u, fir[v], 0, 0};
-        fir[v] = m++;
-    }
-
-    bool bfs(int s, int t) {
-        queue<int> q;
-        memset(dep, 0, sizeof(int) * (n + 1));
-        dep[s] = 1;
-        q.push(s);
-        while (!q.empty()) {
-            int u = q.front();
-            q.pop();
-            for (int i = fir[u]; ~i; i = e[i].nxt) {
-                int v = e[i].v;
-                if ((!dep[v]) && (e[i].cap > e[i].flow)) {
-                    dep[v] = dep[u] + 1;
-                    q.push(v);
+template <typename T> class Dinic {
+    private:
+        int n, s, t, cnt, level[MAXN];
+        T w[MAXN][MAXN];
+        bool bfs() {
+            memset(level, -1, sizeof(level));
+            queue<int> que; que.push(s);
+            level[s] = 0;
+            while (que.size()) {
+                int tmp = que.front(); que.pop();
+                for (int i = 0; i < n; ++i) if (w[tmp][i] > 0) {
+                    if (level[i] == -1) {
+                        level[i] = level[tmp] + 1;
+                        que.push(i);
+                    }
                 }
             }
+            return level[t] != -1;
         }
-        return dep[t];
-    }
-
-    int dfs(int u, int t, int bound) {
-        if ((u == t) || (!bound)) return bound;
-        int ret = 0;
-        for (int& i = cur[u]; ~i; i = e[i].nxt) {
-            int v = e[i].v, d;
-            if ((dep[v] == dep[u] + 1) && (d = dfs(v, t, min(bound - ret, e[i].cap - e[i].flow)))) {
-                ret += d;
-                e[i].flow += d;
-                e[i ^ 1].flow -= d;
-                if (ret == bound) return ret;
+        T flow(int now, T low) {
+            T res = 0;
+            if (now == t) return low;
+            for (int i = 0; i < n && res < low; ++i) if (w[now][i] > 0) {
+                if (level[i] == level[now] + 1) {
+                    T tmp = flow(i, min(w[now][i], low - res));
+                    w[now][i] -= tmp; w[i][now] += tmp;
+                    res += tmp;
+                }
             }
+            if (!res) level[now] = -1;
+            return res;
         }
-        return ret;
-    }
-
-    int max_flow(int s, int t) {
-        int flow = 0;
-        while (bfs(s, t)) {
-            memcpy(cur, fir, sizeof(int) * (n + 1));
-            flow += dfs(s, t, INT_MAX);
+    public:
+        Dinic(int _n, int _s, int _t): n(_n), s(_s), t(_t) {
+            memset(w, 0, sizeof(w));
         }
-        return flow;
-    }
+        void add_edge(int a, int b, T flow) {
+            w[a][b] = flow;
+        }
+        T max_flow() {
+            long long ans = 0;
+            while (bfs()) ans += flow(s, INF);
+            return ans;
+        }
+        vector<vector<T>> get_w() {
+            vector<vector<T>> ret;
+            for (int i = 0; i < n; ++i) {
+                ret.push_back(vector<T>());
+                for (int j = 0; j < n; ++j) ret[i].push_back(w[i][j]);
+            }
+            return ret;
+        }
 };
 
 // Edmonds-Karp 算法
