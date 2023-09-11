@@ -26,6 +26,21 @@ def kmp(query: str, pattern: str) -> bool:
                 return i - m + 1
     return -1
 
+# KMP算法(下标)
+def kmp_cnt(query: str, pattern: str) -> int:
+    n, m = len(query), len(pattern)
+    fail = get_fail(pattern)
+    ans, j = 0, -1
+    for i in range(n):
+        while j != -1 and pattern[j + 1] != query[i]:
+            j = fail[j]
+        if pattern[j + 1] == query[i]:
+            j += 1
+            if j == m - 1:
+                ans += 1
+                j = fail[j]
+    return ans
+
 # Z函数(字符串s[i]开头的后缀与本字符串的最长公共前缀)
 def z_func(s: str) -> List[int]:
     n = len(s)
