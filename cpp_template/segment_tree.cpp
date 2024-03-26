@@ -1,5 +1,6 @@
 #include <climits>
 #include <vector>
+#include <numeric>
 
 using namespace std;
 
@@ -118,6 +119,46 @@ public:
         }
         if (R > m) {
             ans = min(ans, query(root * 2 + 1, m + 1, r, L, R));
+        }
+        return ans;
+    }
+};
+
+// 单点更新-区间GCD查询
+class SegmentTree {
+private:
+    vector<int> g;
+
+public:
+    SegmentTree(int n) {
+        g.resize(n * 4, 0);
+    }
+    
+    void update(int root, int l, int r, int idx, int val) {
+        if (l == r) {
+            g[root] = val;
+            return;
+        }
+        int m = l + (r - l) / 2;
+        if (idx <= m) {
+            update(root * 2, l, m, idx, val);
+        } else {
+            update(root * 2 + 1, m + 1, r, idx, val);
+        }
+        g[root] = gcd(g[root * 2], g[root * 2 + 1]);
+    }
+    
+    int query(int root, int l, int r, int L, int R) {
+        if (L <= l && r <= R) {
+            return g[root];
+        }
+        int ans = 0;
+        int m = l + (r - l) / 2;
+        if (L <= m) {
+            ans = gcd(ans, query(root * 2, l, m, L, R));
+        }
+        if (R > m) {
+            ans = gcd(ans, query(root * 2 + 1, m + 1, r, L, R));
         }
         return ans;
     }
