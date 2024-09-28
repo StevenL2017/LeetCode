@@ -83,6 +83,19 @@ class SegmentTree:
         if R > m:
             ans = min(ans, self.query(root * 2 + 1, m + 1, r, L, R))
         return ans
+    
+    def query_index(self, root, l, r, L, R, val):
+        # 返回区间 [L,R] 中 <= val 的最靠左的位置，不存在时返回 0
+        if self.min[root] > val:
+            return 0
+        if l == r:
+            return l
+        m = (l + r) // 2
+        if self.min[root * 2] <= val:
+            return self.query_index(root * 2, l, m, L, R, val)
+        if m < R:
+            return self.query_index(root * 2 + 1, m + 1, r, L, R, val)
+        return 0
 
 # 动态开点-区间元素个数查询
 class SegmentTree:
