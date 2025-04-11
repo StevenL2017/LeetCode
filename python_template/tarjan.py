@@ -72,16 +72,16 @@ class Tarjan:
 
     @staticmethod
     def getSCC(
-        n: int, adjMap: DefaultDict[int, Set[int]]
-    ) -> Tuple[int, DefaultDict[int, Set[int]], List[int]]:
+        n: int, adj: dict[int, set[int]]
+    ) -> tuple[int, dict[int, set[int]], list[int]]:
         """Tarjan求解有向图的强连通分量
 
         Args:
             n (int): 结点0-n-1
-            adjMap (DefaultDict[int, Set[int]]): 图
+            adj (dict[int, set[int]]): 图
 
         Returns:
-            Tuple[int, DefaultDict[int, Set[int]], List[int]]: SCC的数量、分组、每个结点对应的SCC编号
+            tuple[int, dict[int, set[int]], list[int]]: SCC的数量、分组、每个结点对应的SCC编号
         """
 
         def dfs(cur: int) -> None:
@@ -90,19 +90,19 @@ class Tarjan:
                 return
             visited[cur] = True
 
-            order[cur] = low[cur] = dfsId
+            dfn[cur] = low[cur] = dfsId
             dfsId += 1
             stack.append(cur)
             inStack[cur] = True
 
-            for next in adjMap[cur]:
-                if not visited[next]:
-                    dfs(next)
-                    low[cur] = min(low[cur], low[next])
-                elif inStack[next]:
-                    low[cur] = min(low[cur], order[next])  # 注意这里是order
+            for nxt in adj[cur]:
+                if not visited[nxt]:
+                    dfs(nxt)
+                    low[cur] = min(low[cur], low[nxt])
+                elif inStack[nxt]:
+                    low[cur] = min(low[cur], dfn[nxt])
 
-            if order[cur] == low[cur]:
+            if dfn[cur] == low[cur]:
                 while stack:
                     top = stack.pop()
                     inStack[top] = False
@@ -113,7 +113,7 @@ class Tarjan:
                 SCCId += 1
 
         dfsId = 0
-        order, low = [Tarjan.INF] * n, [Tarjan.INF] * n
+        dfn, low = [Tarjan.INF] * n, [Tarjan.INF] * n
 
         visited = [False] * n
         stack = []
@@ -124,7 +124,7 @@ class Tarjan:
         SCCIdByNode = [-1] * n
 
         for cur in range(n):
-            if not visited[cur]:
+            if not visited[cur] and not inStack[cur]:
                 dfs(cur)
 
         return SCCId, SCCGroupById, SCCIdByNode
